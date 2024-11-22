@@ -1,0 +1,71 @@
+{
+  "name": "wms",
+  "author": {
+    "email": "1@1.com",
+    "name": "author"
+  },
+  "homepage": "https://example.com",
+  "version": "1.0.0",
+  "main": "main.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "build": "electron-builder build --win --x64",
+    "build32": "electron-builder build --win --ia32",
+    "buildMac": "electron-builder build --universal --mac",
+    "buildLinux": "electron-builder build --linux deb --x64"
+  },
+  "devDependencies": {
+    "@electron/notarize": "^2.5.0",
+    "electron": "33.2.0",
+    "electron-builder": "25.1.8"
+  },
+  "build": {
+    "appId": "com.wms.app",
+    "productName": "wms",
+    "extraResources":  {
+      "from": "./config.json",
+      "to": "../"
+    },
+    "win": {
+      "icon": "build/icons/logo.ico",
+      "artifactName": "${productName}_setup_${version}.${ext}"
+    },
+    "linux": {
+      "icon": "build/icons/logo_256x256.png",
+      "category": "Network",
+      "target": [
+        "deb"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false,
+      "createDesktopShortcut": "always",
+      "installerIcon": "build/icons/logo.ico",
+      "uninstallerIcon": "build/icons/logo.ico"
+    },
+    "afterSign": "notarize.js",
+    "dmg": {
+      "sign": false
+    },
+    "mac": {
+      "icon": "build/icons/logo.icns",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "entitlements.mac.plist",
+      "entitlementsInherit": "entitlements.mac.plist",
+      "artifactName": "${productName}-${platform}-${arch}-${version}.${ext}",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    }
+  },
+  "dependencies": {
+    "@electron/notarize": "^2.5.0"
+  }
+}
