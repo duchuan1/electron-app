@@ -67,8 +67,8 @@ jobs:
 
       - name: Release package
         run: |
-          npm run build
-          npm run build32
+          npm run build publish=always
+          npm run build32 publish=always
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
@@ -108,8 +108,8 @@ jobs:
 
       - name: Release win7 package
         run: |
-          npm run build
-          npm run build32
+          npm run build publish=always 
+          npm run build32 publish=always
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
@@ -191,10 +191,10 @@ jobs:
 
       - name: Release package
         run: |
-          npm run buildLinux
-          npm run buildRpm
-          npm run buildAppImage
-          npm run buildPacman
+          npm run buildLinux publish=always
+          npm run buildRpm publish=always
+          npm run buildAppImage publish=always
+          npm run buildPacman publish=always
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
