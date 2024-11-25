@@ -11,13 +11,13 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron .",
-    "build": "electron-builder build --win --x64",
-    "build32": "electron-builder build --win --ia32",
-    "buildMac": "electron-builder build --universal --mac",
-    "buildLinux": "electron-builder build --linux deb --x64",
-    "buildRpm": "electron-builder build --linux rpm --x64",
-    "buildAppImage": "electron-builder build --linux appImage --x64",
-    "buildPacman": "electron-builder build --linux pacman --x64"
+    "build": "electron-builder build --win --x64 publish=always",
+    "build32": "electron-builder build --win --ia32 publish=always",
+    "buildMac": "electron-builder build --universal --mac publish=always",
+    "buildLinux": "electron-builder build --linux deb --x64 publish=always",
+    "buildRpm": "electron-builder build --linux rpm --x64 publish=always",
+    "buildAppImage": "electron-builder build --linux appImage --x64 publish=always",
+    "buildPacman": "electron-builder build --linux pacman --x64 publish=always"
   },
   "devDependencies": {
     "@electron/notarize": "^2.5.0",
