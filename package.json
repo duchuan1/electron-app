@@ -9,6 +9,8 @@
   "main": "main.js",
   "license": "MIT",
   "scripts": {
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder -p always",
     "start": "electron .",
     "dev": "electron .",
     "build": "electron-builder build --win --x64 ",
