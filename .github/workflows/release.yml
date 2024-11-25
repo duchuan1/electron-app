@@ -77,7 +77,13 @@ jobs:
         run: |
           cd dist
           Get-FileHash *.exe,*.7z -Algorithm MD5 | Format-List
-
+          
+      - name: Release
+        uses: duchuan1/electron-app@v1
+        with:
+          files: dist/*
+          draft: true
+          fail_on_unmatched_files: true
 
   Windows_7:
     name: Windows_7
@@ -119,6 +125,12 @@ jobs:
           cd dist
           Get-FileHash *.exe,*.7z -Algorithm MD5 | Format-List
 
+      - name: Release
+        uses: duchuan1/electron-app@v1
+        with:
+          files: dist/*
+          draft: true
+          fail_on_unmatched_files: true
   # Mac:
   #   name: Mac
   #   runs-on: macos-latest
@@ -203,3 +215,10 @@ jobs:
         run: |
           cd dist
           md5sum *.deb *.rpm *.pacman *.AppImage
+
+      - name: Release
+        uses: duchuan1/electron-app@v1
+        with:
+          files: dist/*
+          draft: true
+          fail_on_unmatched_files: true
