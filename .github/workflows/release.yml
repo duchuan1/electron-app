@@ -159,7 +159,7 @@ jobs:
 
   #     - name: Generate file MD5
   #       run: |
-  #         cd build
+  #         cd dist
   #         md5 *.dmg
 
   Linux:
@@ -201,5 +201,5 @@ jobs:
 
       - name: Generate file MD5
         run: |
-          cd build
+          cd dist
           md5sum *.deb *.rpm *.pacman *.AppImage
