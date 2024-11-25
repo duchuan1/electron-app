@@ -192,6 +192,9 @@ jobs:
       - name: Release package
         run: |
           npm run buildLinux
+          npm run buildRpm
+          npm run buildAppImage
+          npm run buildPacman
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
