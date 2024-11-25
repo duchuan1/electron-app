@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow ,ipcRenderer} = require('electron');
+const { app, BrowserWindow, Tray, Menu} = require('electron');
 const path = require('node:path');
 const fs = require('fs');
 //增加chrome启动参数
@@ -8,12 +8,31 @@ const fs = require('fs');
 
 //https://juejin.cn/post/7271896318956027967
 //https://github.com/electron/electron/releases/tag/v33.2.0
+var mainWindow;
+var contents;
+const isLinux = process.platform == 'linux';
+const isWin = process.platform == 'win32';
+const isMac = process.platform == 'darwin';
+const isProd = app.isPackaged;
+
+function showWindow() {
+  if (!mainWindow) return
+  if (mainWindow.isVisible()) {
+    if (mainWindow.isMinimized()) mainWindow.restore()
+    else mainWindow.focus()
+  } else mainWindow.show()
+}
+function hideWindow (){
+  if (!mainWindow) return
+  mainWindow.hide()
+}
+
 function createWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
-    icon: path.join(__dirname,'build/icons/login.png'),
+    icon: path.join(__dirname,'build/icons/logo.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       //是否注入nodeapi
@@ -27,7 +46,7 @@ function createWindow() {
   // 禁用菜单栏中的开发者工具选项
   mainWindow.removeMenu();
 
-  const contents = mainWindow.webContents;
+  contents = mainWindow.webContents;
   mainWindow.webContents.on('before-input-event', (event, input) => {
     if (input.key === 'F11') {
       mainWindow.setFullScreen(!mainWindow.isFullScreen());
@@ -46,7 +65,7 @@ function createWindow() {
       event.preventDefault();
       return;
     }
-    
+
     if (input.key === 'F5') {
       contents.reload();
       event.preventDefault();
@@ -59,6 +78,15 @@ function createWindow() {
       return;
     }
   });
+  mainWindow.on('close', e =>  {
+    if (isWin) {
+      e.preventDefault();
+      hideWindow();
+    }
+  });
+  mainWindow.on('closed', () => {
+    mainWindow = null
+  })
   // //配置h5页面的文件路径
   // win.loadURL(url.format({
   //   pathname: path.join(__dirname, 'index.html'),
@@ -78,10 +106,13 @@ function createWindow() {
   //加载配置文件
   // 获取安装目录
   
-  // let configPath = path.join(__dirname, 'config.json');
+ //let configPath = path.join(__dirname, 'config.json');
 // 获取安装目录
 let exePath = path.dirname(app.getPath('exe')).replace(/\\/g, "/");
 let configPath = `${exePath}/config.json`;
+if (!isProd) {
+  configPath = path.join(__dirname, 'config.json');
+}
   // 读取配置文件
   fs.readFile(configPath, 'utf-8', (err, data) => {
   if (err) {
@@ -94,16 +125,51 @@ let configPath = `${exePath}/config.json`;
   });
 }
 
+//创建桌面角标
+var tray ;
+function initTrayIcon() {
+  //非windows不启用托盘
+  if (!isWin) {
+    return;
+  }
+
+  tray = new Tray(path.join(__dirname, isWin?'resources/icons/logo.ico':'resources/icons/logo_256x256.png'));
+  const trayContextMenu = Menu.buildFromTemplate([
+      {
+          label: '打开',
+          click: () => {
+              showWindow();
+          }
+      }, {
+          label: '退出',
+          click: () => {
+            app.exit();
+          }
+      }
+  ]);
+
+  tray.setToolTip('WMS');
+  tray.on('click', () => {
+      showWindow();
+  });
+  tray.on('right-click', () => {
+      tray.popUpContextMenu(trayContextMenu);
+  });
+}
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow()
+  initTrayIcon();
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+      initTrayIcon();
+    }
   })
 })
 
