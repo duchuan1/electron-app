@@ -14,3 +14,5 @@ jobs:
           token: ${{ secrets.PAT }}
           repository: duchuan1/electron-app
           event-type: npm-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
