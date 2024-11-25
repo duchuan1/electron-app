@@ -77,9 +77,9 @@ jobs:
         run: |
           cd dist
           Get-FileHash *.exe,*.7z -Algorithm MD5 | Format-List
-          
+
       - name: Release
-        uses: duchuan1/electron-app@v1
+        uses: duchuan1/electron-app@v1.0.0
         with:
           files: dist/*
           draft: true
@@ -126,7 +126,7 @@ jobs:
           Get-FileHash *.exe,*.7z -Algorithm MD5 | Format-List
 
       - name: Release
-        uses: duchuan1/electron-app@v1
+        uses: duchuan1/electron-app@v1.0.0
         with:
           files: dist/*
           draft: true
@@ -217,7 +217,7 @@ jobs:
           md5sum *.deb *.rpm *.pacman *.AppImage
 
       - name: Release
-        uses: duchuan1/electron-app@v1
+        uses: duchuan1/electron-app@v1.0.0
         with:
           files: dist/*
           draft: true
