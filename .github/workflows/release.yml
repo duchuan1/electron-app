@@ -67,15 +67,15 @@ jobs:
 
       - name: Release package
         run: |
-          npm run build publish=always
-          npm run build32 publish=always
+          npm run build 
+          npm run build32 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
 
       - name: Generate file MD5
         run: |
-          cd build
+          cd dist
           Get-FileHash *.exe,*.7z -Algorithm MD5 | Format-List
 
 
@@ -108,15 +108,15 @@ jobs:
 
       - name: Release win7 package
         run: |
-          npm run build publish=always 
-          npm run build32 publish=always
+          npm run build  
+          npm run build32 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
 
       - name: Generate file MD5
         run: |
-          cd build
+          cd dist
           Get-FileHash *.exe,*.7z -Algorithm MD5 | Format-List
 
   # Mac:
@@ -191,10 +191,10 @@ jobs:
 
       - name: Release package
         run: |
-          npm run buildLinux publish=always
-          npm run buildRpm publish=always
-          npm run buildAppImage publish=always
-          npm run buildPacman publish=always
+          npm run buildLinux 
+          npm run buildRpm 
+          npm run buildAppImage 
+          npm run buildPacman 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
