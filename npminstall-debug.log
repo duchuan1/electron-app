@@ -4,7 +4,7 @@
   pkgs: [
     {
       name: '',
-      version: 'electron/notarize',
+      version: 'electron-forge/cli',
       type: 'git',
       alias: undefined,
       arg: [Result]
@@ -15,7 +15,7 @@
   cacheDir: 'C:\\Users\\du\\.npminstall_tarball',
   env: {
     npm_config_registry: 'https://registry.npmmirror.com',
-    npm_config_argv: '{"remain":[],"cooked":["--fix-bug-versions","--china","--userconfig=C:\\\\Users\\\\du\\\\.cnpmrc","--disturl=https://cdn.npmmirror.com/binaries/node","--registry=https://registry.npmmirror.com","electron/notarize","-s"],"original":["--fix-bug-versions","--china","--userconfig=C:\\\\Users\\\\du\\\\.cnpmrc","--disturl=https://cdn.npmmirror.com/binaries/node","--registry=https://registry.npmmirror.com","electron/notarize","-s"]}',
+    npm_config_argv: '{"remain":[],"cooked":["--fix-bug-versions","--china","--userconfig=C:\\\\Users\\\\du\\\\.cnpmrc","--disturl=https://cdn.npmmirror.com/binaries/node","--registry=https://registry.npmmirror.com","electron-forge/cli","-s"],"original":["--fix-bug-versions","--china","--userconfig=C:\\\\Users\\\\du\\\\.cnpmrc","--disturl=https://cdn.npmmirror.com/binaries/node","--registry=https://registry.npmmirror.com","electron-forge/cli","-s"]}',
     npm_config_user_agent: 'npminstall/7.12.0 npm/? node/v16.15.0 win32 x64',
     npm_config_cache: 'C:\\Users\\du\\.npminstall_tarball',
     NODE: 'C:\\Program Files\\nodejs\\node.exe',

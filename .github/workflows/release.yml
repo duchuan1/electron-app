@@ -67,8 +67,8 @@ jobs:
 
       - name: Release package
         run: |
-          npm run build 
-          npm run build32 
+          npm run build
+          npm run build32
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
@@ -78,29 +78,6 @@ jobs:
           cd dist
           Get-FileHash *.exe,*.7z -Algorithm MD5 | Format-List
 
-      - name: Cleanup Artifacts for Windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          npx rimraf "dist/!(*.exe)"
-      
-      - name: Cleanup Artifacts for MacOS
-        if: matrix.os == 'macos-latest'
-        run: |
-          npx rimraf "dist/!(*.dmg)"
-          
-      - name: upload artifacts
-        uses: actions/upload-artifact@v3.0.0
-        with:
-          name: ${{ matrix.os }}
-          path: dist
-          
-      - name: release
-        uses: softprops/action-gh-release@v0.1.14
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: "dist/**"
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
   Windows_7:
     name: Windows_7
@@ -131,8 +108,8 @@ jobs:
 
       - name: Release win7 package
         run: |
-          npm run build  
-          npm run build32 
+          npm run build
+          npm run build32
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
@@ -141,30 +118,6 @@ jobs:
         run: |
           cd dist
           Get-FileHash *.exe,*.7z -Algorithm MD5 | Format-List
-
-      - name: Cleanup Artifacts for Windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          npx rimraf "dist/!(*.exe)"
-      
-      - name: Cleanup Artifacts for MacOS
-        if: matrix.os == 'macos-latest'
-        run: |
-          npx rimraf "dist/!(*.dmg)"
-          
-      - name: upload artifacts
-        uses: actions/upload-artifact@v3.0.0
-        with:
-          name: ${{ matrix.os }}
-          path: dist
-          
-      - name: release
-        uses: softprops/action-gh-release@v0.1.14
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: "dist/**"
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
   # Mac:
   #   name: Mac
@@ -238,10 +191,10 @@ jobs:
 
       - name: Release package
         run: |
-          npm run buildLinux 
-          npm run buildRpm 
-          npm run buildAppImage 
-          npm run buildPacman 
+          npm run buildLinux
+          npm run buildRpm
+          npm run buildAppImage
+          npm run buildPacman
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
@@ -250,27 +203,3 @@ jobs:
         run: |
           cd dist
           md5sum *.deb *.rpm *.pacman *.AppImage
-
-      - name: Cleanup Artifacts for Windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          npx rimraf "dist/!(*.exe)"
-      
-      - name: Cleanup Artifacts for MacOS
-        if: matrix.os == 'macos-latest'
-        run: |
-          npx rimraf "dist/!(*.dmg)"
-          
-      - name: upload artifacts
-        uses: actions/upload-artifact@v3.0.0
-        with:
-          name: ${{ matrix.os }}
-          path: dist
-          
-      - name: release
-        uses: softprops/action-gh-release@v0.1.14
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: "dist/**"
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
