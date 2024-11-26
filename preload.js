@@ -16,3 +16,16 @@ window.addEventListener('DOMContentLoaded', () => {
     replaceText(`${type}-version`, process.versions[type])
   }
 })
+
+// Preload (Isolated World)
+// 三种方式在main与html之间通信
+const { contextBridge, ipcRenderer } = require('electron')
+contextBridge.exposeInMainWorld('versions', {
+  node: () => process.versions.node,
+  chrome: () => process.versions.chrome,
+  electron: () => process.versions.electron,
+  ping: () => ipcRenderer.invoke('ping'),
+  saveConfig: (config) => ipcRenderer.invoke('SaveConfig', config),
+  loadConfig: (config) => ipcRenderer.invoke('LoadConfig')
+  // 除函数之外，我们也可以暴露变量
+})

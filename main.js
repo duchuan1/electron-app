@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, Tray, Menu, dialog } = require('electron');
+const { app, BrowserWindow, Tray, Menu, dialog, ipcMain } = require('electron');
 const path = require('node:path');
 const fs = require('fs');
 
@@ -44,18 +44,25 @@ function getFilePath() {
   return configPath1;
 }
 
-function SaveConfig() {
+function SaveConfig(c) {
   try {
     if (!configPath) {
       configPath = getFilePath();
     }
+    if (!c) {
+      return config;
+    }
 
+    config = Object.assign(config, c);
     console.log('Write Config: '+ JSON.stringify(config));
     const content = JSON.stringify(config, null, 2);
     fs.writeFileSync(configPath, content, 'utf-8');
+
   } catch (err) {
     console.error('Write Config Error:', err);
   }
+
+  return config;
 }
 
 function ReadConfig() {
@@ -70,6 +77,8 @@ function ReadConfig() {
 
 
     Object.assign(config, config1);
+
+    return config;
   } catch (err) {
     console.error('Read Config Error:', err);
   }
@@ -90,8 +99,8 @@ function hideWindow (){
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width:  config.width,
-    height: config.height,
+    width:  parseInt(config.width),
+    height: parseInt(config.height),
     icon: path.join(__dirname,'build/icons/logo.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -152,7 +161,13 @@ function createWindow() {
     showWindow();
   })
 
-  mainWindow.loadURL(config.url);
+  // mainWindow.loadURL(config.url);
+  if (config.url) {
+    mainWindow.loadURL(config.url);
+  }
+  else{
+    mainWindow.loadURL(`file://${path.join(__dirname, 'index.html')}`);
+  }
 }
   // //配置h5页面的文件路径
   // win.loadURL(url.format({
@@ -209,6 +224,16 @@ function initTrayIcon() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  ipcMain.handle('ping', () => 'pong')
+  ipcMain.handle('SaveConfig', (e,c) => {
+    return SaveConfig(c);
+    //return config;
+  })
+  ipcMain.handle('LoadConfig', () => {
+    
+    return config;
+  })
+
   createWindow()
   initTrayIcon();
 
@@ -235,3 +260,10 @@ app.on('window-all-closed', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+// // ipc main接收html的消息并响应
+// ipcMain.on('myAction', function (event, arg)
+// {
+// 	console.log(arg); // 打印ping
+//     event.returnValue = 'pong';
+// });
