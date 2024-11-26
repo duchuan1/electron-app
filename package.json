@@ -27,7 +27,7 @@
   "build": {
     "appId": "com.wms.app",
     "productName": "wms",
-    "extraResources":  {
+    "extraResources": {
       "from": "./config.json",
       "to": "../"
     },
