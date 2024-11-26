@@ -1,7 +1,16 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, Tray, Menu} = require('electron');
+const { app, BrowserWindow, Tray, Menu, dialog } = require('electron');
 const path = require('node:path');
 const fs = require('fs');
+
+
+//单例
+const getTheLock = app.requestSingleInstanceLock();
+ 
+if (!getTheLock) {
+    app.quit();
+}
+
 //增加chrome启动参数
 //禁用沙箱模式
 //app.commandLine.appendArgument("--no-sandbox");
@@ -10,10 +19,61 @@ const fs = require('fs');
 //https://github.com/electron/electron/releases/tag/v33.2.0
 var mainWindow;
 var contents;
+var config = {
+  width: 1920,
+  height: 1080,
+  url: ""
+};
+var configPath;
 const isLinux = process.platform == 'linux';
 const isWin = process.platform == 'win32';
 const isMac = process.platform == 'darwin';
 const isProd = app.isPackaged;
+
+function getFilePath() {
+   // 获取安装目录
+  
+ //let configPath = path.join(__dirname, 'config.json');
+  // 获取安装目录
+  let exePath = path.dirname(app.getPath('exe')).replace(/\\/g, "/");
+  let configPath1 = `${exePath}/config.json`;
+  if (!isProd) {
+    configPath1 = path.join(__dirname, 'config.json');
+  }
+
+  return configPath1;
+}
+
+function SaveConfig() {
+  try {
+    if (!configPath) {
+      configPath = getFilePath();
+    }
+
+    console.log('Write Config: '+ JSON.stringify(config));
+    const content = JSON.stringify(config, null, 2);
+    fs.writeFileSync(configPath, content, 'utf-8');
+  } catch (err) {
+    console.error('Write Config Error:', err);
+  }
+}
+
+function ReadConfig() {
+  try {
+    if (!configPath) {
+      configPath = getFilePath();
+    }
+
+    const data = fs.readFileSync(configPath, 'utf-8');
+    console.log('Read Config:', data);
+    const config1 = JSON.parse(data);
+
+
+    Object.assign(config, config1);
+  } catch (err) {
+    console.error('Read Config Error:', err);
+  }
+}
 
 function showWindow() {
   if (!mainWindow) return
@@ -30,8 +90,8 @@ function hideWindow (){
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 1920,
-    height: 1080,
+    width:  config.width,
+    height: config.height,
     icon: path.join(__dirname,'build/icons/logo.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -87,6 +147,13 @@ function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    showWindow();
+  })
+
+  mainWindow.loadURL(config.url);
+}
   // //配置h5页面的文件路径
   // win.loadURL(url.format({
   //   pathname: path.join(__dirname, 'index.html'),
@@ -104,29 +171,11 @@ function createWindow() {
   //mainWindow.loadURL("https://onlineconvertfree.com/zh/converter/images/")
 
   //加载配置文件
-  // 获取安装目录
-  
- //let configPath = path.join(__dirname, 'config.json');
-// 获取安装目录
-let exePath = path.dirname(app.getPath('exe')).replace(/\\/g, "/");
-let configPath = `${exePath}/config.json`;
-if (!isProd) {
-  configPath = path.join(__dirname, 'config.json');
-}
-  // 读取配置文件
-  fs.readFile(configPath, 'utf-8', (err, data) => {
-  if (err) {
-    console.error('Read Config Error:', err);
-    return;
-  }
-    const config = JSON.parse(data);
-    mainWindow.loadURL(config.url);
-    console.log('Config Contents:', config);
-  });
-}
+  ReadConfig();
+
 
 //创建桌面角标
-var tray ;
+var tray;
 function initTrayIcon() {
   //非windows不启用托盘
   if (!isWin) {
