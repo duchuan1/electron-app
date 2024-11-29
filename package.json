@@ -17,7 +17,10 @@
     "buildLinux": "electron-builder build --linux deb --x64",
     "buildRpm": "electron-builder build --linux rpm --x64",
     "buildAppImage": "electron-builder build --linux appImage --x64",
-    "buildPacman": "electron-builder build --linux pacman --x64"
+
+    "buildLinuxArm64": "electron-builder build --linux deb --arm64",
+    "buildRpmArm64": "electron-builder build --linux rpm --arm64",
+    "buildAppImageArm64": "electron-builder build --linux appImage --arm64"
   },
   "devDependencies": {
     "@electron/notarize": "^2.5.0",

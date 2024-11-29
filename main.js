@@ -26,7 +26,9 @@ var config = {
 };
 var configPath;
 const isLinux = process.platform == 'linux';
-const isWin = process.platform == 'win32';
+//const isWin = process.platform == 'win32';
+//禁用托盘
+const isWin = false;
 const isMac = process.platform == 'darwin';
 const isProd = app.isPackaged;
 
@@ -146,6 +148,11 @@ function createWindow() {
       event.preventDefault();
       return;
     }
+    
+    if (input.control && input.key.toLowerCase() === 'i') {
+      mainWindow.loadURL(`file://${path.join(__dirname, 'index.html')}`);
+      return;
+    }
   });
   mainWindow.on('close', e =>  {
     if (isWin) {
@@ -226,8 +233,17 @@ function initTrayIcon() {
 app.whenReady().then(() => {
   ipcMain.handle('ping', () => 'pong')
   ipcMain.handle('SaveConfig', (e,c) => {
-    return SaveConfig(c);
-    //return config;
+    //return SaveConfig(c);
+    SaveConfig(c);
+    
+    if (config.url) {
+      mainWindow.loadURL(config.url);
+    }
+    else{
+      mainWindow.loadURL(`file://${path.join(__dirname, 'index.html')}`);
+    }
+    
+    return config;
   })
   ipcMain.handle('LoadConfig', () => {
     
