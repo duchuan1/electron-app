@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"> -->
+    <meta http-equiv="Content-Security-Policy" content="style-src 'self' 'unsafe-inline'">
+    <link href="./styles.css" rel="stylesheet">
+    <title>测试</title>
+  </head>
+  <body onload="loadConfig()">
+    <div>
+      <input type="button"  value="强制刷新页面" onclick="refresh()"/>
+      <input type="button"  value="全屏" onclick="setFullScreen(true)"/>
+      <input type="button" value="退出全屏" onclick="setFullScreen(false)"/>
+      <input type="button" value="显示调试界面" onclick="showDevTools(true)"/>
+      <input type="button" value="隐藏调试界面" onclick="showDevTools(false)"/>
+      <input type="button" value="加载配置文件" onclick="loadConfig()"/>
+      <input type="button" value="退出程序" onclick="exit()"/>
+    </div>
+    <div id="configForm">
+      <div><span style="width: 110px;float: left;">地址：</span><input type="text" name="url"/></div>
+      <div><span style="width: 110px;float: left;">初始宽度：</span><input type="text" name="width"/></div>
+      <div><span style="width: 110px;float: left;">初始高度：</span><input type="text" name="height"/></div>
+      <div><span style="width: 110px;float: left;">其他自定义1：</span><input type="text" name="other1"/></div>
+      <div><span style="width: 110px;float: left;">其他自定义2：</span><input type="text" name="other2"/></div>
+      <div><input type="button"  value="保存" onclick="saveConfig()"/></div>
+    </div>
+    <!-- You can also require other files to run in this process -->
+    <script>
+      function setFullScreen(isFullScreen) {
+        window.tools.setFullScreen(isFullScreen == true? true : false);
+      }
+      function refresh() {
+        window.tools.refresh();
+      }
+      function exit() {
+        window.tools.exit();
+      }
+      async function loadConfig() {
+        var config = await window.tools.loadConfig();
+        //alert(JSON.stringify(config));
+        for (const key in config) {
+          var value = config[key];
+          var inputEl = document.getElementsByName(key);
+          if (inputEl.length>0) {
+            inputEl.forEach(element => {
+              element.value = value;
+            });
+          }
+
+        }
+      }
+      async function saveConfig() {
+        var savaConfig = {};
+        var configForm = document.getElementById("configForm").getElementsByTagName("input");
+        for (const key in configForm) {
+            var node = configForm[key];
+            var name = node.getAttribute && node.getAttribute('name');
+            var value = node.value;
+            if (name == "" || name == null || name == undefined) {
+              continue;
+            }
+            if (value == "" || value == null || value == undefined) {
+              continue;
+            }
+
+            savaConfig[name] = value;
+          }
+        
+          //保存后重定向设置为true，否则设置为false
+          savaConfig["isSaveRedirect"] = false;
+
+          const response = await window.versions.saveConfig(savaConfig);
+
+          alert("保存成功");
+      }
+
+      function showDevTools(isShow) {
+        window.tools.showDevTools(isShow);
+      }
+    </script>
+  </body>
+</html>

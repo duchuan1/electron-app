@@ -26,6 +26,21 @@ contextBridge.exposeInMainWorld('versions', {
   electron: () => process.versions.electron,
   ping: () => ipcRenderer.invoke('ping'),
   saveConfig: (config) => ipcRenderer.invoke('SaveConfig', config),
-  loadConfig: (config) => ipcRenderer.invoke('LoadConfig')
-  // 除函数之外，我们也可以暴露变量
+  loadConfig: (config) => ipcRenderer.invoke('LoadConfig'),
+  setFullScreen: (isFull) => ipcRenderer.invoke('setFullScreen', isFull),
+  isFullScreen: () => ipcRenderer.invoke('isFullScreen'),
+  exit: () => ipcRenderer.invoke('exit'),
+  showDevTools:(isShow) => ipcRenderer.invoke('showDevTools', isShow),
+  refresh:() => ipcRenderer.invoke('refresh'),
+});
+
+contextBridge.exposeInMainWorld('tools', {
+  ping: () => ipcRenderer.invoke('ping'),
+  saveConfig: (config) => ipcRenderer.invoke('SaveConfig', config),
+  loadConfig: (config) => ipcRenderer.invoke('LoadConfig'),
+  setFullScreen: (isFull) => ipcRenderer.invoke('setFullScreen', isFull),
+  isFullScreen: () => ipcRenderer.invoke('isFullScreen'),
+  exit: () => ipcRenderer.invoke('exit'),
+  showDevTools:(isShow) => ipcRenderer.invoke('showDevTools', isShow),
+  refresh:() => ipcRenderer.invoke('refresh'),
 })

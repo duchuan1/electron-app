@@ -20,7 +20,8 @@ async function Save() {
     if (height) {
         uConfig["height"] = height;
     }
-
+    
+    uConfig["isSaveRedirect"] = true;
     const response = await window.versions.saveConfig(uConfig);
     document.getElementById("configUrl").value = response.url;
     document.getElementById("configWidth").value = response.width;

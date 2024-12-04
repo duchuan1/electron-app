@@ -149,6 +149,11 @@ function createWindow() {
       return;
     }
     
+    if (input.control && input.shift && input.key.toLowerCase() === 'i') {
+      mainWindow.loadURL(`file://${path.join(__dirname, 'test.html')}`);
+      return;
+    }
+
     if (input.control && input.key.toLowerCase() === 'i') {
       mainWindow.loadURL(`file://${path.join(__dirname, 'index.html')}`);
       return;
@@ -236,19 +241,48 @@ app.whenReady().then(() => {
     //return SaveConfig(c);
     SaveConfig(c);
     
-    if (config.url) {
-      mainWindow.loadURL(config.url);
+    //是否进行页面重定向
+    if (config["isSaveRedirect"]) {
+      if (config.url) {
+        mainWindow.loadURL(config.url);
+      }
+      else{
+        mainWindow.loadURL(`file://${path.join(__dirname, 'index.html')}`);
+      }
     }
-    else{
-      mainWindow.loadURL(`file://${path.join(__dirname, 'index.html')}`);
-    }
-    
+
     return config;
-  })
+  });
   ipcMain.handle('LoadConfig', () => {
     
     return config;
-  })
+  });
+  //设置全屏状态
+  ipcMain.handle('setFullScreen', (e,isFull) => {
+    mainWindow.setFullScreen(isFull);
+  });
+  //获取全屏状态
+  ipcMain.handle('isFullScreen', () => {
+    return mainWindow.isFullScreen();
+  });
+  //退出程序
+  ipcMain.handle('exit', () => {
+    app.quit();
+  });
+  ipcMain.handle('refresh', () => {
+    contents.reloadIgnoringCache();
+  });
+  ipcMain.handle('showDevTools', (e, isShow) => {
+    if (contents.isDevToolsOpened()) {
+      if (!isShow) {
+        contents.closeDevTools();
+      }
+    }else{
+      if (isShow) {
+        contents.openDevTools();
+      }
+    }
+  });
 
   createWindow()
   initTrayIcon();

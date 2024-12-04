@@ -1,5 +1,8 @@
 {
   "width": "1920",
   "height": "1080",
-  "url": ""
+  "url": "http://www.baidu.com",
+  "other1": "测试",
+  "other2": "测试22",
+  "isSaveRedirect": false
 }
